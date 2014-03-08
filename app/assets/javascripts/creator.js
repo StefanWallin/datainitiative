@@ -1,31 +1,51 @@
 //= require angular
 var app = angular.module('Creator', [])
 .controller('ApplicationController', function($scope){
-	$scope.canvas  = { id: "canvas", 'nested': false, 'startY': 0, 'startX': 0, 'x': -3000, 'y': -3000, scale: 1 };
+	$scope.basicDataTypes = ["String", "Char", "Boolean", "Integer", "Long", "Float", "Double", "BigDecimal"];
+	$scope.canvas  = { id: "canvas", 'nested': false, 'startY': 0, 'startX': 0, 'x': -1500, 'y': -1500, scale: 1 };
 	$scope.shapes = [
-		{ id: 'entity_0', 'nested': true, 'startY': 0, 'startX': 0, 'x': 3450, 'y': 3200 },
-		{ id: 'entity_1', 'nested': true, 'startY': 0, 'startX': 0, 'x': 3150, 'y': 3070 }
+		{ id: 'entity_0', 'nested': true, 'startY': 0, 'startX': 0, 'x': 1750, 'y': 1600, 'selected': false },
+		{ id: 'entity_1', 'nested': true, 'startY': 0, 'startX': 0, 'x': 1690, 'y': 1735, 'selected': false }
 	];
-	$scope.addEntity = function () {
+	$scope.addShape = function(event) {
+		console.log(arguments);
+		var canvasElem = $("#" + $scope.canvas.id);
+		var canvasWrapperElem = canvasElem.parent();
+		var canvasWidth = canvasElem.width();
+		var canvasHeight = canvasElem.height();
+		var x, y;
+		if(	!isNaN(event.offsetX) && event.offsetX > -1 && event.offsetX <= canvasWidth &&
+			!isNaN(event.offsetY) && event.offsetY > -1 && event.offsetY <= canvasHeight) {
+			x = event.offsetX;
+			y = event.offsetY;
+		} else {
+			x = Math.abs($scope.canvas.x) + canvasWrapperElem.width()/2;
+			y = Math.abs($scope.canvas.y) + canvasWrapperElem.height()/2;
+		}
 		$scope.shapes.push({
 			'id': "entity_" + $scope.shapes.length,
 			'nested': true,
 			'startY': 0,
 			'startX': 0,
-			'x': Math.abs($scope.canvas.x) + $("#" + $scope.canvas.id).parent().width()/2,
-			'y': Math.abs($scope.canvas.y) + $("#" + $scope.canvas.id).parent().height()/2
+			'x': x,
+			'y': y,
+			'selected': false
 		});
 	};
-	$scope.saveState = function () {
+	$scope.saveState = function() {
 		console.log("running function saveState with arguments: ", arguments);
 	};
-	$scope.forkState = function () {
+	$scope.forkState = function() {
 		console.log("running function forkState with arguments: ", arguments);
 	};
-	$scope.shareState = function () {
+	$scope.shareState = function() {
 		console.log("running function shareState with arguments: ", arguments);
 	};
+	$scope.setSelected = function(event, index) {
+		event.preventDefault();
+		// console.log(arguments);
 
+	};
 
 });
 app.directive('myMovable', function($document) {
@@ -151,6 +171,7 @@ app.directive('myScalable', function($window) {
 	};
 	return function(scope, element, attr) {
 		angular.element($window).bind("mousewheel", throttle(function(event){
+			event.preventDefault();
 			if(event.toElement == element[0]) {
 				if(event.originalEvent.wheelDelta > 0) {
 					scaleIn(element, scope);
