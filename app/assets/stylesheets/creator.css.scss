@@ -1,0 +1,99 @@
+@import 'variables';
+
+html, body, .creator-wrapper {
+	height: 100%;
+	max-height: 100%;
+}
+
+
+
+header,
+.creator-canvas,
+.creator-canvas-wrapper,
+.creator-toolkit,
+footer {
+	position: absolute;
+}
+header {
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 50px;
+	padding: 10px;
+
+	color: $main_heading_color;
+	background: $plate_background;
+	border-bottom: 3px solid $line_color;
+}
+footer {
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 47px;
+	padding: 10px;
+	background: $plate_background;
+	border-top: 3px solid $line_color;
+}
+
+.creator-toolkit {
+	right: 0;
+	width: 280px;
+	top: 50px;
+	bottom: 50px;
+	background: $plate_background;
+	border-left: 3px solid $line_color;
+}
+.creator-canvas-wrapper {
+	left: 0;
+	top: 50px;
+	right: 280px;
+	bottom: 50px;
+	overflow: hidden;
+}
+.creator-entity {
+	position: absolute;
+	border-radius: 4px;
+	top: 0;
+	left: 0;
+	// left: 3450px;
+	// top: 3200px;
+	width: 100px;
+	height: 100px;
+	border: 3px double darken($background_color, 20%);
+	padding: 8px;
+
+	cursor: default;
+	background: $background_color;
+	resize:both;
+	overflow:auto;
+	&:hover {
+		border: 3px double $line_color;
+	}
+	
+}
+.creator-canvas {
+	height: 10000px;
+	width: 10000px;
+	left: 0;
+	top: 0;
+	// left: -3000px;
+	// top: -3000px;
+
+	cursor: move;
+	background-color: $blueprint_back;
+	background-image: 
+		linear-gradient(  0deg, $blueprint_line 2px, transparent 2px),
+		linear-gradient( 90deg, $blueprint_line 2px, transparent 2px),
+		linear-gradient(  0deg, $blueprint_line 1px, transparent 1px),
+		linear-gradient( 90deg, $blueprint_line 1px, transparent 1px);
+	background-size:
+		100px 100px, 
+		100px 100px, 
+		20px 20px, 
+		20px 20px;
+	background-position: 
+		-2px -2px, 
+		-2px -2px, 
+		-1px -1px, 
+		-1px -1px
+}

@@ -1,0 +1,25 @@
+// Colors with color names
+
+$limegreen: rgba(160, 211, 8, 1);
+$grey: rgba(111, 111, 111, 1);
+$dark_grey: #808080;
+$hard_grey: #484848;
+$whitesmoke: #f1f1f1;
+$blueprint_back: rgb(34, 102, 153);
+$blueprint_line: rgb(88,139,178);
+
+
+// What color goes where
+$main_heading_color: $whitesmoke;
+$secondary_heading_color: $grey;
+$body_text_color: $hard_grey;
+$background_color: $whitesmoke;
+$plate_background: $blueprint_back;
+$line_color: $blueprint_line;
+
+
+// Typography variables
+$light_font: "FreightSans Light", "Open Sans", Helvetica, Arial, sans-serif;
+$book_font: "FreightSans Book", "Open Sans", Helvetica, Arial, sans-serif;
+$semibold_font: "Freight Sans W01 Semibold", "Open Sans", Helvetica, Arial, sans-serif;
+$console_font: "Consolas W01 Regular", Consolas, Inconsolata, Menlo, 'Andale Mono', monospaced ;

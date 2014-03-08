@@ -1,14 +1,34 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>Datainitiative</title>
-  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
-  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
+<!--[if lt IE 7 ]><html class="no-js ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="no-js ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="no-js ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html class="no-js" lang="en"> <!--<![endif]-->
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-<%= yield %>
+		<!-- // Change these to better suit your project -->
+		<title>The Data Initiative</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"/>
 
-</body>
+		<!-- // Font hosting by fonts.com -->
+<!-- 		<link type="text/css" rel="stylesheet" href="http://fast.fonts.net/cssapi/4c79ea8d-dad8-4630-b70a-fd153f8bc934.css"/>         -->
+
+		<%= stylesheet_link_tag    "application", media: "all" %>
+		<%= javascript_include_tag "application" %>
+		<%= csrf_meta_tags %>
+
+	</head>
+	<body>
+		<!--[if lt IE 8]>
+			<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+		<![endif]-->
+		<div class="nojs-information">
+			<h1>Javascript sorely needed</h1>
+			<p>This application will work a lot better if you turn javascript back on ;)</p>
+		</div>
+		<div class="container">
+			<%= yield %>
+		</div>
+	</body>
 </html>
