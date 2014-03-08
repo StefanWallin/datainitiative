@@ -43,8 +43,30 @@ var app = angular.module('Creator', [])
 	};
 	$scope.setSelected = function(event, index) {
 		event.preventDefault();
-		// console.log(arguments);
+		$scope.shapes[index].selected = !$scope.shapes[index].selected;
+	};
 
+	$scope.scaleIn = function(element, scope) {
+		if($scope.canvas.scale < 2) {
+			if(element === undefined) element = $("#"+$scope.canvas.id);
+			$scope.canvas.scale = $scope.canvas.scale + 0.1;
+			element.css({
+				top: ($scope.canvas.x - $scope.canvas.y*0.1) + 'px',
+				left:  ($scope.canvas.x - $scope.canvas.x*0.1) + 'px',
+				"-webkit-transform": "scale(" + $scope.canvas.scale + ")"
+			});
+		}
+	};
+	$scope.scaleOut = function(element, scope) {
+		if($scope.canvas.scale > 0.5) {
+			if(element === undefined) element = $("#"+$scope.canvas.id);
+			$scope.canvas.scale = $scope.canvas.scale - 0.1;
+			element.css({
+				top: ($scope.canvas.x + $scope.canvas.y*0.1) + 'px',
+				left:  ($scope.canvas.x + $scope.canvas.x*0.1) + 'px',
+				"-webkit-transform": "scale(" + $scope.canvas.scale + ")"
+			});
+		}
 	};
 
 });
@@ -124,29 +146,12 @@ app.directive('myMovable', function($document) {
 				event.preventDefault();
 				$document.unbind('mousemove', mousemove);
 				$document.unbind('mouseup', mouseup);
+				return false;
 			}
 		}
 	};
 });
 app.directive('myScalable', function($window) {
-	var scaleIn = function(element, scope) {
-		console.log("scaleIn");
-		scope.canvas.scale = scope.canvas.scale + 0.1;
-		element.css({
-			top: (scope.canvas.x - scope.canvas.y*0.1) + 'px',
-			left:  (scope.canvas.x - scope.canvas.x*0.1) + 'px',
-			"-webkit-transform": "scale(" + scope.canvas.scale + ")"
-		});
-	};
-	var scaleOut = function(element, scope) {
-		console.log("scaleOut");
-		scope.canvas.scale = scope.canvas.scale - 0.1;
-		element.css({
-			top: (scope.canvas.x + scope.canvas.y*0.1) + 'px',
-			left:  (scope.canvas.x + scope.canvas.x*0.1) + 'px',
-			"-webkit-transform": "scale(" + scope.canvas.scale + ")"
-		});
-	};
 	var throttle = function(fn, threshhold, scope) {
 		threshhold || (threshhold = 250);
 		var last,
@@ -174,9 +179,9 @@ app.directive('myScalable', function($window) {
 			event.preventDefault();
 			if(event.toElement == element[0]) {
 				if(event.originalEvent.wheelDelta > 0) {
-					scaleIn(element, scope);
+					scope.scaleIn(element, scope);
 				}else{
-					scaleOut(element, scope);
+					scope.scaleOut(element, scope);
 				}
 			}
 		}, 100));

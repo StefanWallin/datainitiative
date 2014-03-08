@@ -9,6 +9,7 @@
 				data-my-movable="shapes[$index]"
 				data-ng-click="setSelected($event, $index)"
 			>blob -  {{$index}}</div>
+				<span data-ng-show="shape.selected">Selected!</span>
 		</div>
 	</div>
 	<div class="creator-toolkit">
@@ -16,9 +17,11 @@
 	</div>
 	<footer>
 		<button data-ng-click="addShape()">Add Entity</button>
-		<button data-ng-click="saveState()">Save</button>
-		<button data-ng-click="forkState()">Fork</button>
-		<button data-ng-click="shareState()">Share</button>
+		<button data-ng-click="scaleOut()">Zoom Out ( - )</button>
+		<button data-ng-click="scaleIn()">Zoom In ( + )</button>
+		<button data-ng-click="saveState()" disabled>Save</button>
+		<button data-ng-click="forkState()" disabled>Fork</button>
+		<button data-ng-click="shareState()" disabled>Share</button>
 
 	</footer>
 </div>
