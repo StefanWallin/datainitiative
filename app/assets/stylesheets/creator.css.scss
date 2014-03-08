@@ -51,23 +51,32 @@ footer {
 	overflow: hidden;
 }
 .creator-entity {
+	color: $whitesmoke;
 	position: absolute;
-	border-radius: 4px;
+	// border-radius: 4px;
 	top: 0;
 	left: 0;
 	// left: 3450px;
 	// top: 3200px;
-	width: 100px;
-	height: 100px;
-	border: 3px double darken($background_color, 20%);
+	min-width: 100px;
+	min-height: 100px;
+	max-width: 300px;
+	background: rgba(255,255,255,0.01);
+	border: 2px dashed lighten($line_color,30%);
 	padding: 8px;
 
 	cursor: default;
-	background: $background_color;
+	// background: $background_color;
 	resize:both;
 	overflow:auto;
-	&:hover {
-		border: 3px double $line_color;
+	opacity: 0.7;
+	&:hover,
+	&.selected {
+		transition: opacity, background ease 0.4s;
+		-webkit-transition: opacity, background ease 0.4s;
+		opacity: 1;
+		background: rgba(255,255,255,0.1);
+		border: 2px solid lighten($line_color,50%);
 	}
 	
 }
@@ -82,18 +91,18 @@ footer {
 	cursor: move;
 	background-color: $blueprint_back;
 	background-image: 
-		linear-gradient(  0deg, $blueprint_line 2px, transparent 2px),
-		linear-gradient( 90deg, $blueprint_line 2px, transparent 2px),
+		// linear-gradient(  0deg, $blueprint_line 2px, transparent 2px),
+		// linear-gradient( 90deg, $blueprint_line 2px, transparent 2px),
 		linear-gradient(  0deg, $blueprint_line 1px, transparent 1px),
 		linear-gradient( 90deg, $blueprint_line 1px, transparent 1px);
 	background-size:
-		100px 100px, 
-		100px 100px, 
-		20px 20px, 
-		20px 20px;
+		// 100px 100px, 
+		// 100px 100px, 
+		// 15px 15px, 
+		15px 15px;
 	background-position: 
-		-2px -2px, 
-		-2px -2px, 
-		-1px -1px, 
+		// -2px -2px, 
+		// -2px -2px, 
+		// -1px -1px, 
 		-1px -1px
 }
