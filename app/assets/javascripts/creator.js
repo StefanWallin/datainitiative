@@ -73,7 +73,13 @@ app.controller('ApplicationController', function($scope, $document){
 		}
 	};
 	$scope.setSelected = function(event, index) {
-		event.stopPropagation();
+		var elem = $(event.target);
+		if(elem.data("my-movable") !== null) {
+			// Only prevent default with elements that is not directly the movable.
+			// All other elements will be descendants, and their event bubbling should
+			// work as normally intended.
+			event.stopPropagation();
+		}
 		if($scope.selectedShape > -1) {
 			$scope.shapes[$scope.selectedShape].selected = false;
 		}
@@ -123,11 +129,12 @@ app.directive('myMovable', function($document) {
 				// Prevent default dragging of selected content
 
 				var elem = $(event.target);
-				if(elem.data("my-movable") !== null) {
+				if(elem.data("my-movable") !== undefined) {
 					// Only prevent default with elements that is not directly the movable.
 					// All other elements will be descendants, and their event bubbling should
 					// work as normally intended.
 					event.preventDefault();
+					console.log("preventDefault 1", elem.data("my-movable"));
 				}
 				if(scope.movableElement.id == event.target.id || $(event.target).parents("#"+scope.movableElement.id).length > 0) {
 					// Only do moving for the movable that we clicked inside.
@@ -195,7 +202,7 @@ app.directive('myMovable', function($document) {
 					// All other elements will be descendants, and their event bubbling should
 					// work as normally intended.
 					event.preventDefault();
-					console.log("preventing default");
+					console.log("preventDefault 2");
 				}
 				setTimeout(function(){
 					$document.dragging = false;
