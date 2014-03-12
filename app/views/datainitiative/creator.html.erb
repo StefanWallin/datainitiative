@@ -3,20 +3,23 @@
 		<h1>data initiative</h1>
 	</header>
 	<div class="creator-canvas-wrapper">
-		<div id="mycanvas" class="creator-canvas" data-my-movable="canvas" data-my-scalable data-ng-click="addShape($event)">
+		<div id="mycanvas" class="creator-canvas" data-my-movable="canvas" data-my-scalable data-ng-click="workspaceClicked($event)">
 
-			<div data-ng-repeat="shape in shapes track by $index" id="{{shape.id}}"class="creator-entity" 
+			<div data-ng-repeat="shape in shapes track by $index" id="{{shape.id}}" class="creator-entity" 
 				data-my-movable="shapes[$index]"
 				data-ng-click="setSelected($event, $index)"
-			>blob -  {{$index}}</div>
-				<span data-ng-show="shape.selected">Selected!</span>
+				data-ng-class="{'creator-entity-selected': shape.selected}">
+				<input class="creator-entity-input" data-ng-model="shape.entity.name">
+				<ul class="creator-entity-toolbar" data-ng-show="shape.selected">
+					<li><button data-ng-click="removeShape($event, $index)">Remove</button></li>
+				</ul>
+			</div>
 		</div>
 	</div>
 	<div class="creator-toolkit">
 
 	</div>
 	<footer>
-		<button data-ng-click="addShape()">Add Entity</button>
 		<button data-ng-click="scaleOut()">Zoom Out ( - )</button>
 		<button data-ng-click="scaleIn()">Zoom In ( + )</button>
 		<button data-ng-click="saveState()" disabled>Save</button>

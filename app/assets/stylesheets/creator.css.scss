@@ -63,7 +63,7 @@ footer {
 	max-width: 300px;
 	background: rgba(255,255,255,0.01);
 	border: 2px dashed lighten($line_color,30%);
-	padding: 8px;
+	padding: 0px;
 
 	cursor: default;
 	// background: $background_color;
@@ -71,14 +71,27 @@ footer {
 	overflow:auto;
 	opacity: 0.7;
 	&:hover,
-	&.selected {
+	&.creator-entity-selected {
 		transition: opacity, background ease 0.4s;
 		-webkit-transition: opacity, background ease 0.4s;
 		opacity: 1;
 		background: rgba(255,255,255,0.1);
-		border: 2px solid lighten($line_color,50%);
+		border-color: lighten($line_color,50%);
+	}
+	&.creator-entity-selected {
+		border-style: solid;
 	}
 	
+}
+.creator-entity-input {
+	-webkit-appearance: none;
+	border: none;
+	background: none;
+	width: 100%;
+	margin: 0;
+	color: $whitesmoke;
+	margin: 0;
+	border-bottom: 2px solid lighten($line_color, 50%);
 }
 .creator-canvas {
 	height: 5000px;

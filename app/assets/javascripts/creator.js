@@ -1,36 +1,55 @@
 //= require angular
-var app = angular.module('Creator', [])
-.controller('ApplicationController', function($scope){
+var app = angular.module('Creator', []);
+app.factory('templates', function() {
+  return {
+    compact:   '<ng-include src="\'compact\'"></ng-include>',
+    detailed:  '<ng-include src="\'detailed\'"></ng-include>'
+  };
+});
+app.controller('ApplicationController', function($scope, $document){
 	$scope.basicDataTypes = ["String", "Char", "Boolean", "Integer", "Long", "Float", "Double", "BigDecimal"];
 	$scope.canvas  = { id: "canvas", 'nested': false, 'startY': 0, 'startX': 0, 'x': -1500, 'y': -1500, scale: 1 };
 	$scope.shapes = [
-		{ id: 'entity_0', 'nested': true, 'startY': 0, 'startX': 0, 'x': 1750, 'y': 1600, 'selected': false },
-		{ id: 'entity_1', 'nested': true, 'startY': 0, 'startX': 0, 'x': 1690, 'y': 1735, 'selected': false }
+		{ id: 'entity_0', 'nested': true, 'startY': 0, 'startX': 0, 'x': 1750, 'y': 1600, 'selected': false, 'entity': {name: 'Human'} },
+		{ id: 'entity_1', 'nested': true, 'startY': 0, 'startX': 0, 'x': 1690, 'y': 1735, 'selected': false, 'entity': {name: 'Aids'} }
 	];
+	$scope.selectedShape = -1;
+	$document.dragging = false;
+
 	$scope.addShape = function(event) {
-		console.log(arguments);
 		var canvasElem = $("#" + $scope.canvas.id);
-		var canvasWrapperElem = canvasElem.parent();
-		var canvasWidth = canvasElem.width();
-		var canvasHeight = canvasElem.height();
-		var x, y;
-		if(	!isNaN(event.offsetX) && event.offsetX > -1 && event.offsetX <= canvasWidth &&
-			!isNaN(event.offsetY) && event.offsetY > -1 && event.offsetY <= canvasHeight) {
-			x = event.offsetX;
-			y = event.offsetY;
-		} else {
-			x = Math.abs($scope.canvas.x) + canvasWrapperElem.width()/2;
-			y = Math.abs($scope.canvas.y) + canvasWrapperElem.height()/2;
+		if(event.target == canvasElem[0] && !$document.dragging) {
+			
+			var canvasWrapperElem = canvasElem.parent();
+			var canvasWidth = canvasElem.width();
+			var canvasHeight = canvasElem.height();
+			var x, y;
+			if(	!isNaN(event.offsetX) && event.offsetX > -1 && event.offsetX <= canvasWidth &&
+				!isNaN(event.offsetY) && event.offsetY > -1 && event.offsetY <= canvasHeight) {
+				x = event.offsetX;
+				y = event.offsetY;
+			} else {
+				x = Math.abs($scope.canvas.x) + canvasWrapperElem.width()/2;
+				y = Math.abs($scope.canvas.y) + canvasWrapperElem.height()/2;
+			}
+			$scope.shapes.push({
+				'id': "entity_" + $scope.shapes.length,
+				'nested': true,
+				'startY': 0,
+				'startX': 0,
+				'x': x,
+				'y': y,
+				'selected': false,
+				'entity': {
+					'name': 'EntityName'
+				}
+			});
 		}
-		$scope.shapes.push({
-			'id': "entity_" + $scope.shapes.length,
-			'nested': true,
-			'startY': 0,
-			'startX': 0,
-			'x': x,
-			'y': y,
-			'selected': false
-		});
+	};
+	$scope.removeShape = function(event, index) {
+		event.stopPropagation();
+		$scope.selectedShape = -1;
+		$scope.shapes.splice(index, 1);
 	};
 	$scope.saveState = function() {
 		console.log("running function saveState with arguments: ", arguments);
@@ -41,11 +60,26 @@ var app = angular.module('Creator', [])
 	$scope.shareState = function() {
 		console.log("running function shareState with arguments: ", arguments);
 	};
-	$scope.setSelected = function(event, index) {
-		event.preventDefault();
-		$scope.shapes[index].selected = !$scope.shapes[index].selected;
+	$scope.unselectAll = function(event) {
+		if(event !== null && event !== undefined) event.stopPropagation();
+		$scope.shapes[$scope.selectedShape].selected = false;
+		$scope.selectedShape = -1;
 	};
-
+	$scope.workspaceClicked = function(event) {
+		if($scope.selectedShape === -1){
+			$scope.addShape(event);
+		} else {
+			$scope.unselectAll();
+		}
+	};
+	$scope.setSelected = function(event, index) {
+		event.stopPropagation();
+		if($scope.selectedShape > -1) {
+			$scope.shapes[$scope.selectedShape].selected = false;
+		}
+		$scope.shapes[index].selected = true;
+		$scope.selectedShape = index;
+	};
 	$scope.scaleIn = function(element, scope) {
 		if($scope.canvas.scale < 2) {
 			if(element === undefined) element = $("#"+$scope.canvas.id);
@@ -87,17 +121,27 @@ app.directive('myMovable', function($document) {
 			});
 			element.on('mousedown', function(event) {
 				// Prevent default dragging of selected content
-				event.preventDefault();
-				if(scope.movableElement.id == event.target.id) {
+
+				var elem = $(event.target);
+				if(elem.data("my-movable") !== null) {
+					// Only prevent default with elements that is not directly the movable.
+					// All other elements will be descendants, and their event bubbling should
+					// work as normally intended.
+					event.preventDefault();
+				}
+				if(scope.movableElement.id == event.target.id || $(event.target).parents("#"+scope.movableElement.id).length > 0) {
+					// Only do moving for the movable that we clicked inside.
 					scope.movableElement.startX = event.pageX - scope.movableElement.x;
 					scope.movableElement.startY = event.pageY - scope.movableElement.y;
 					$document.on('mousemove', mousemove);
 					$document.on('mouseup', mouseup);
 				}
+				return false;
 			});
  
 			function mousemove(event) {
 				event.preventDefault();
+				$document.dragging = true;
 				scope.movableElement.y = event.pageY - scope.movableElement.startY;
 				scope.movableElement.x = event.pageX - scope.movableElement.startX;
 				// These if's are here to check boundaries and keep the "canvas" in shape.
@@ -140,56 +184,26 @@ app.directive('myMovable', function($document) {
 					top: newY + 'px',
 					left:  newX + 'px'
 				});
+				return false;
 			}
  
-			function mouseup() {
-				event.preventDefault();
+			function mouseup(event) {
+				var elem = $(event.target);
+				console.log(elem);
+				if(elem.data("my-movable") !== undefined) {
+					// Only prevent default with elements that is not directly the movable.
+					// All other elements will be descendants, and their event bubbling should
+					// work as normally intended.
+					event.preventDefault();
+					console.log("preventing default");
+				}
+				setTimeout(function(){
+					$document.dragging = false;
+				}, 200);
 				$document.unbind('mousemove', mousemove);
 				$document.unbind('mouseup', mouseup);
 				return false;
 			}
 		}
-	};
-});
-app.directive('myScalable', function($window) {
-	var throttle = function(fn, threshhold, scope) {
-		threshhold || (threshhold = 250);
-		var last,
-		deferTimer;
-		return function () {
-			var context = scope || this;
-
-			var now = +new Date(),
-			args = arguments;
-			if (last && now < last + threshhold) {
-				// hold on to it
-				clearTimeout(deferTimer);
-				deferTimer = setTimeout(function () {
-					last = now;
-					// fn.apply(context, args);
-				}, threshhold);
-			} else {
-				last = now;
-				fn.apply(context, args);
-			}
-		};
-	};
-	return function(scope, element, attr) {
-		angular.element($window).bind("mousewheel", throttle(function(event){
-			event.preventDefault();
-			if(event.toElement == element[0]) {
-				if(event.originalEvent.wheelDelta > 0) {
-					scope.scaleIn(element, scope);
-				}else{
-					scope.scaleOut(element, scope);
-				}
-			}
-		}, 100));
-	};
-});
-
-app.directive('myScalable', function($window) {
-	return function(){
-
 	};
 });
