@@ -129,12 +129,12 @@ app.directive('myMovable', function($document) {
 				// Prevent default dragging of selected content
 
 				var elem = $(event.target);
-				if(elem.data("my-movable") !== undefined) {
+				shouldWePreventBubbling = elem.data("my-movable") !== undefined;
+				if(shouldWePreventBubbling) {
 					// Only prevent default with elements that is not directly the movable.
 					// All other elements will be descendants, and their event bubbling should
 					// work as normally intended.
 					event.preventDefault();
-					console.log("preventDefault 1", elem.data("my-movable"));
 				}
 				if(scope.movableElement.id == event.target.id || $(event.target).parents("#"+scope.movableElement.id).length > 0) {
 					// Only do moving for the movable that we clicked inside.
@@ -143,7 +143,9 @@ app.directive('myMovable', function($document) {
 					$document.on('mousemove', mousemove);
 					$document.on('mouseup', mouseup);
 				}
-				return false;
+				if(shouldWePreventBubbling){
+					return false;
+				}
 			});
  
 			function mousemove(event) {
@@ -196,20 +198,22 @@ app.directive('myMovable', function($document) {
  
 			function mouseup(event) {
 				var elem = $(event.target);
-				console.log(elem);
-				if(elem.data("my-movable") !== undefined) {
+				shouldWePreventBubbling = elem.data("my-movable") !== undefined;
+				if(shouldWePreventBubbling) {
+
 					// Only prevent default with elements that is not directly the movable.
 					// All other elements will be descendants, and their event bubbling should
 					// work as normally intended.
 					event.preventDefault();
-					console.log("preventDefault 2");
 				}
 				setTimeout(function(){
 					$document.dragging = false;
 				}, 200);
 				$document.unbind('mousemove', mousemove);
 				$document.unbind('mouseup', mouseup);
-				return false;
+				if(shouldWePreventBubbling){
+					return false;
+				}
 			}
 		}
 	};
